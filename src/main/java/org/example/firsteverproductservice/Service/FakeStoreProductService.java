@@ -2,6 +2,7 @@ package org.example.firsteverproductservice.Service;
 
 import org.example.firsteverproductservice.Dtos.FakeStoreProductDto;
 import org.example.firsteverproductservice.Models.Product;
+import org.example.firsteverproductservice.exceptions.ProductNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -16,11 +17,13 @@ public class FakeStoreProductService implements ProductService{
     public Product getProductById(Long id) {
         //Calls the fakeStore API to get the product By Id
         //FakeStore Provides its API but to call it we use object of RestTemplate
+//        int x = 1/0;
 //        throw new RuntimeException("Some thing is Wrong");
         RestTemplate restTemplate = new RestTemplate();
        FakeStoreProductDto fakeStoreProductDto =  restTemplate.getForObject("https://fakestoreapi.com/products/" + id, FakeStoreProductDto.class);
        if(fakeStoreProductDto==null){
-           return null;
+           throw new ProductNotFoundException(id,"Invalid product id");
+
        }
        return convertFakeStoreProductDtoToProduct(fakeStoreProductDto);
     }
